@@ -218,6 +218,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var dotHider: Timer?
     var windowFetcher: Timer?
 
+    var didBecomeActiveAtLeastOnce = false
+
     func application(_ application: NSApplication, open urls: [URL]) {
         guard didBecomeActiveAtLeastOnce else {
             return
@@ -263,7 +265,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         AppDelegate.instance = self
         Defaults[.launchCount] += 1
-        
+
         NSApp.windows.first { $0.title.contains("Settings") }?.close()
 
         if !CGPreflightScreenCaptureAccess(), Defaults[.indicatorColor] != .default {
@@ -313,7 +315,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    var didBecomeActiveAtLeastOnce = false
 }
 
 extension NSAppearance {
