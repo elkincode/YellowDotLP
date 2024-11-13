@@ -219,12 +219,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var windowFetcher: Timer?
 
     func application(_ application: NSApplication, open urls: [URL]) {
+        guard didBecomeActiveAtLeastOnce else {
+            return
+        }
+        guard !Defaults[.showMenubarIcon] else {
+            return
+        }
         WM.open("settings")
     }
 
     func applicationDidBecomeActive(_ notification: Notification) {
-        guard !firstAppActive else {
-            firstAppActive = false
+        guard didBecomeActiveAtLeastOnce else {
+            didBecomeActiveAtLeastOnce = true
+            return
+        }
+        guard !Defaults[.showMenubarIcon] else {
             return
         }
         WM.open("settings")
@@ -254,6 +263,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         AppDelegate.instance = self
         Defaults[.launchCount] += 1
+        
+        NSApp.windows.first { $0.title.contains("Settings") }?.close()
 
         if !CGPreflightScreenCaptureAccess(), Defaults[.indicatorColor] != .default {
             let alert = NSAlert()
@@ -302,7 +313,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    private var firstAppActive = true
+    var didBecomeActiveAtLeastOnce = false
 }
 
 extension NSAppearance {
@@ -435,7 +446,7 @@ struct YellowDotApp: App {
         }
         .menuBarExtraStyle(.menu)
         .onChange(of: showMenubarIcon) { show in
-            if !show {
+            if !show, appDelegate.didBecomeActiveAtLeastOnce {
                 openWindow(id: "settings")
                 NSApp.activate(ignoringOtherApps: true)
             }
