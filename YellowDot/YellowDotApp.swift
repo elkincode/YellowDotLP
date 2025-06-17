@@ -39,8 +39,13 @@ struct WindowInfo {
         COLORED_MENUBAR_ICON_NAMES.contains(name)
             && CONTROL_CENTER_NAMES.contains(ownerName)
     }
+    
+    var isLowPowerIndicator: Bool {
+        return ownerName == "Control Center" && name == "Battery" && bounds.height < 30
+    }
+
     var isDot: Bool {
-        name == "StatusIndicator" || name == "Battery"
+        return name == "StatusIndicator" || isLowPowerIndicator
     }
 
     static func fromInfoDict(_ dict: [String: Any]) -> WindowInfo {
