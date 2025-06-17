@@ -40,7 +40,7 @@ struct WindowInfo {
             && CONTROL_CENTER_NAMES.contains(ownerName)
     }
     var isDot: Bool {
-        name == "StatusIndicator"
+        name == "StatusIndicator" || name == "Battery"
     }
 
     static func fromInfoDict(_ dict: [String: Any]) -> WindowInfo {
@@ -164,6 +164,7 @@ func getWindows() -> [WindowInfo] {
 
         return name == "StatusIndicator"
             || name == "Menubar"
+            || name == "Battery"
             || (
                 COLORED_MENUBAR_ICON_NAMES.contains(name)
                     && CONTROL_CENTER_NAMES.contains((w["kCGWindowOwnerName"] as? String) ?? "")
