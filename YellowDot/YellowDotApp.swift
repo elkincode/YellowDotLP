@@ -366,15 +366,18 @@ enum DotColor: String, Defaults.Serializable {
     @MainActor func brightness(window: WindowInfo) -> Float {
         switch self {
         case .black:
-            -1.0
+            return -1.0
         case .default:
-            0.0
+            return 0.0
         case .white:
-            1.0
+            return 1.0
         case .dim:
-            -0.7
+            return -0.7
         case .adaptive:
-            (!CGSIsMenuBarVisibleOnSpace(cid, window.space ?? 1) || (statusBarAppearance(screen: window.screen)?.isLight ?? true)) ? -1.0 : 1.0
+            
+            let isLightMenuBar = statusBarAppearance(screen: window.screen)?.isLight ?? false
+            
+            return isLightMenuBar ? -1.0 : 1.0
         }
     }
 }
